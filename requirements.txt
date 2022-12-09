@@ -1,0 +1,12 @@
+certifi==2022.9.24
+commonmark==0.9.1
+ipython-genutils==0.2.0
+munkres==1.1.4
+ply==3.11
+pyarrow==9.0.0
+scipy==1.9.3
+seaborn==0.12.1
+matplotlib
+streamlit==1.15.2
+numpy==1.20.2
+pandas==1.2.4
