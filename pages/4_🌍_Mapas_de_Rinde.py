@@ -40,6 +40,8 @@ file = Path+cosechas[opciones.index(cosecha)]+'/'
 
 rinde = file+'rinde.csv'
 resumen = file+'resumen.csv'
+
+st.sidebar.success(f"Procesando: {cosecha}")
 # Leer dataframe
 
 if (path.exists(rinde))&(path.exists(resumen)):
