@@ -8,13 +8,14 @@ import plotly.graph_objs as go
 import plotly.express as px
 from plotly.subplots import make_subplots
 
+fontsize = 16
 st.markdown( #font-weight: 400;
         """
         <style>
           @import url('https://fonts.googleapis.com/css?family=Titillium Web Bold');
           html, body, [class*="css"]  {
-          font-family: 'Titillium Web';
-          font-size: 28px;
+          font-family: 'Titillium Web Bold';
+          font-size: 16px;
           }
        </style>
 
@@ -22,7 +23,7 @@ st.markdown( #font-weight: 400;
        unsafe_allow_html=True,
        )
 
-new_title = '<p style="font-family:Titillium Web; color:Green; font-size: 38px;">Rendimiento</p>'
+new_title = '<p style="font-family:Titillium Web Bold; color:Green; font-size: 20px;">Rendimiento</p>'
 st.markdown(new_title, unsafe_allow_html=True)
 
 with open("path.txt",'r',encoding = 'utf-8') as f:
@@ -102,18 +103,18 @@ if (path.exists(rinde))&(path.exists(resumen)):
         fig.add_trace(go.Pie(labels=labels,values=list(Perd_capa['Perdidas'].values),
             textinfo='label+percent', pull=[0.2, 0.2, .3, 0.1,0],insidetextorientation='radial'),
               row=1, col=1)
-        fig.add_trace(go.Table(header=dict(values=Perd_capa.columns.to_list()), 
+        fig.add_trace(go.Table(header=dict(values=Perd_capa.columns.to_list(),font=dict(color='Green', size=14)),
                  cells=dict(values=[list(Perd_capa[x].values) if i==0 else  list(Perd_capa[x].values.round(2)) for i,x in enumerate(Perd_capa.columns.to_list())])),
                  row=2, col=1)
 
-        fig.add_trace(go.Table(header=dict(values=rinde_g.columns.to_list(),font=dict(size=18,),line = dict(color='rgb(50, 50, 50)'),
+        fig.add_trace(go.Table(header=dict(values=rinde_g.columns.to_list(),font=dict(color='Green', size=14),line = dict(color='rgb(50, 50, 50)'),
             fill = dict(color='#d562be')),cells=dict(values=[list(rinde_g[x].values) for x in rinde_g.columns.to_list()],
             line_color='darkslategray',fill=dict(color=['paleturquoise', 'white']),align=['left', 'center'])),row=2, col=2)
 
-        fig.update_annotations(font_size=28)
+        fig.update_annotations(font_size=fontsize)
 
         fig.update_layout(height=700, width=1000,title_text="Perdidas Generales",showlegend=False,
-                 title_font_size=28,title_font_color='Green',title_font_family='Titillium Web')
+                 title_font_size=fontsize,title_font_color='Green',title_font_family='Titillium Web')
 
         st.write(fig)
 
@@ -134,15 +135,15 @@ if (path.exists(rinde))&(path.exists(resumen)):
         # Perdidas Globales -- Capa Siembra
         #============================================================================================================
         fig=make_subplots(rows=2, cols=2,specs=[[{'type':"table"},{"type": "pie"}],[{"type": "table"},{'type':"table"}]],subplot_titles=("Perdidas por Variable", "", "Resumen", "Rango Sugerido"))
-        fig.add_trace(go.Table(header=dict(values=Capa.columns.to_list()),cells=dict(values=[list(Capa[x].values) if i==0 else  list(Capa[x].values.round(2)) for i,x in enumerate(Capa.columns.to_list())])),row=1, col=1)
-        fig.add_trace(go.Table(header=dict(values=rinde_g.columns.to_list(),font=dict(size=18),line = dict(color='rgb(50, 50, 50)'),
+        fig.add_trace(go.Table(header=dict(values=Capa.columns.to_list(),font=dict(color='Green', size=14)),cells=dict(values=[list(Capa[x].values) if i==0 else  list(Capa[x].values.round(2)) for i,x in enumerate(Capa.columns.to_list())])),row=1, col=1)
+        fig.add_trace(go.Table(header=dict(values=rinde_g.columns.to_list(),font=dict(color='Green', size=14),line = dict(color='rgb(50, 50, 50)'),
             fill = dict(color='#d562be')),cells=dict(values=[list(rinde_g[x].values) for x in rinde_g.columns.to_list()],
             line_color='darkslategray',fill=dict(color=['paleturquoise', 'white']),align=['left', 'center'])),row=2, col=1)
         fig.add_trace(go.Pie(labels=Capa.loc[:,'Variable'],values=list(Capa['Porc_Perd'].values),textinfo='label+percent',pull=[0.1, 0.1, .3, 0,0],insidetextorientation='radial'),row=1, col=2)
-        fig.add_trace(go.Table(header=dict(values=Rangos.columns.to_list()),cells=dict(values=[list(Rangos[x].values) for x in Rangos.columns.to_list()])),row=2, col=2)
+        fig.add_trace(go.Table(header=dict(values=Rangos.columns.to_list(),font=dict(color='Green', size=14)),cells=dict(values=[list(Rangos[x].values) for x in Rangos.columns.to_list()])),row=2, col=2)
 
-        fig.update_annotations(font_size=28)
-        fig.update_layout(height=600, width=900, title_text='Capa: '+capa,showlegend=False,title_font_size=28,
+        fig.update_annotations(font_size=fontsize)
+        fig.update_layout(height=600, width=900, title_text='Capa: '+capa,showlegend=False,title_font_size=fontsize+2,
             title_font_color='Green',title_font_family='Titillium Web')
         st.write(fig)
         #st.write(rinde_g)

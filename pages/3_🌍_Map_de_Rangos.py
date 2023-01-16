@@ -14,13 +14,14 @@ from matplotlib.colors import ListedColormap, LinearSegmentedColormap
 #=========================================
 colorlist=[(0.00, "red"),   (0.33, "red"),(0.33, "yellow"), (0.66, "yellow"), (0.66, "green"),  (1.00, "green")]
 
+fontsize = 16
 st.markdown( #font-weight: 400;
         """
         <style>
           @import url('https://fonts.googleapis.com/css?family=Titillium Web Bold');
           html, body, [class*="css"]  {
-          font-family: 'Titillium Web';
-          font-size: 28px;
+          font-family: 'Titillium Web Bold';
+          font-size: 16px;
           }
        </style>
 
@@ -28,7 +29,7 @@ st.markdown( #font-weight: 400;
        unsafe_allow_html=True,
        )
 
-new_title = '<p style="font-family:Titillium Web; color:Green; font-size: 38px;">Mapas de Rangos</p>'
+new_title = '<p style="font-family:Titillium Web Bold; color:Green; font-size: 20px;">Mapas de Rangos</p>'
 st.markdown(new_title, unsafe_allow_html=True)
 
 
@@ -77,16 +78,16 @@ if (path.exists(rinde))&(path.exists(resumen)):
 
    
     fig = px.scatter(df_rinde, x='x', y='y', color=df_row.loc[0,'Var_capa']+'P',color_continuous_scale = colorlist)
-    fig.update_layout(legend=dict(orientation="h"), title_font_color='Green',title_font_family='Titillium Web',width=900,height=600)
+    fig.update_layout(legend=dict(orientation="h"),title_font_size=fontsize, title_font_color='Green',title_font_family='Titillium Web',width=900,height=600)
     st.write(fig)
     colores = ['red','yellow','green']
     Color = []
     for c in posi:
         Color.append(colores[c])
-    fig = go.Figure(data=[go.Table(header=dict(values=['Rango','color']),
+    fig = go.Figure(data=[go.Table(header=dict(values=['Rango','color'],font=dict(color='Green', size=14)),
         cells=dict(values=[etiquetas,posi],
         fill=dict(color=[['rgb(245,245,245)'],Color] )))])
-    fig.update_layout(title_text="Rangos evaluados",title_font_size=28,title_font_color='Green',title_font_family='Titillium Web',width=900,height=600)
+    fig.update_layout(title_text="Rangos evaluados",title_font_size=fontsize,title_font_color='Green',title_font_family='Titillium Web',width=900,height=600)
     st.write(fig)
 else: 
     st.error('Error... file rinde/resumen not found...', icon="🚨")
