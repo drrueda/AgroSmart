@@ -13,7 +13,7 @@ st.markdown( #font-weight: 400;
           @import url('https://fonts.googleapis.com/css?family=Titillium Web');
           html, body, [class*="css"]  {
           font-family: 'Titillium Web';
-          font-size: 28px;
+          font-size: 16px;
           }
        </style>
 
@@ -32,7 +32,7 @@ with open("path.txt",'w',encoding = 'utf-8') as f:
 
 
 
-new_title = '<p style="font-family:Titillium Web Bold; color:Green; font-size: 38px;">Welcome to AgroSamart! 👋</p>'
+new_title = '<p style="font-family:Titillium Web Bold; color:Green; font-size: 20px;">Welcome to AgroSamart! 👋</p>'
 st.markdown(new_title, unsafe_allow_html=True)
 #st.write("# Welcome to AgroSamart! 👋")
 
