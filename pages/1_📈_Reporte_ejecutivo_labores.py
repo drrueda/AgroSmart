@@ -23,7 +23,7 @@ st.markdown( #font-weight: 400;
        unsafe_allow_html=True,
        )
 
-new_title = '<p style="font-family:Titillium Web Bold; color:Green; font-size: 20px;">Rendimiento</p>'
+new_title = '<p style="font-family:Titillium Web Bold; color:Green; font-size: 20px;">Reporte ejecutivo labores</p>'
 st.markdown(new_title, unsafe_allow_html=True)
 
 with open("path.txt",'r',encoding = 'utf-8') as f:
@@ -67,7 +67,7 @@ if (path.exists(rinde))&(path.exists(resumen)):
     c_esperada = df_resumen.loc[0,'C_esp_kg_h']
     Perd_capa = df_resumen.groupby('Capa').agg(Perdidas=('Perd_kg_h','sum'),Poc_=('Porc_Perd','sum')).reset_index().sort_values(by='Perdidas',ascending = False)
     capas = Perd_capa['Capa'].to_list()
-
+    
     cps = capas.copy()
     # Opciones por capa:
     capas.append('Resumen')
@@ -81,7 +81,7 @@ if (path.exists(rinde))&(path.exists(resumen)):
         # Perdidas Rinde Global
         #====================================================
 
-        var=['Rinde. Prom. kg/ha','% Per. Global','Calidad Global','Perd. Global kg/ha','Perd. USD/ha','% Ajuste']
+        var=['Rinde. Prom. kg/ha','% Dism. de rinde Global','Calidad Global Rinde','Dism. Rinde Global kg/ha','Dism. de rinde USD/ha','% datos usado en Dim. Rinde']
         por_perdida = 0
         ajuste = 0.0
         for cp in cps:
@@ -99,10 +99,11 @@ if (path.exists(rinde))&(path.exists(resumen)):
         # A los Graficos
         #=================================================================
 
-        fig = make_subplots(rows=2, cols=2,specs=[[{"type": "pie"}, {"type": "table"}],[{"type": "table"},{"type": "table"}]],subplot_titles=("", "", "Perdida por capa", "Resumen General"))
+        fig = make_subplots(rows=2, cols=2,specs=[[{"type": "pie"}, {"type": "table"}],[{"type": "table"},{"type": "table"}]],subplot_titles=("", "", "Disminución del rinde por capa", "Resumen General"))
         fig.add_trace(go.Pie(labels=labels,values=list(Perd_capa['Perdidas'].values),
             textinfo='label+percent', pull=[0.2, 0.2, .3, 0.1,0],insidetextorientation='radial'),
               row=1, col=1)
+        Perd_capa.rename(columns={'Perdidas': 'Dism. rinde en kg/ha', 'Poc_':'Dism. rinde %'},inplace=True)
         fig.add_trace(go.Table(header=dict(values=Perd_capa.columns.to_list(),font=dict(color='Green', size=14)),
                  cells=dict(values=[list(Perd_capa[x].values) if i==0 else  list(Perd_capa[x].values.round(2)) for i,x in enumerate(Perd_capa.columns.to_list())])),
                  row=2, col=1)
@@ -113,7 +114,7 @@ if (path.exists(rinde))&(path.exists(resumen)):
 
         fig.update_annotations(font_size=fontsize)
 
-        fig.update_layout(height=700, width=1000,title_text="Perdidas Generales",showlegend=False,
+        fig.update_layout(height=700, width=1000,title_text="Disminución del rinde General",showlegend=False,
                  title_font_size=fontsize,title_font_color='Green',title_font_family='Titillium Web')
 
         st.write(fig)
@@ -128,22 +129,39 @@ if (path.exists(rinde))&(path.exists(resumen)):
 
         # Rinde Global para la capa:
         #===================================================================
-        var=['Rinde. Prom. kg/ha','% Per. Global','Calidad Global','Perd. Global kg/ha','Perd. USD/ha','% Ajuste']
+        var=['Rinde. Prom. kg/ha','% Dism. de rinde Global','Calidad Global Rinde','Dism. Rinde Global kg/ha','Dism. de rinde USD/ha','% datos usado en Dim. Rinde']
         values = [c_esperada,Capa['Porc_Perd'].sum().round(2),round(100-Capa['Porc_Perd'].sum().round(2),2),Capa['Perd_kg_h'].sum().round(2),round(Capa['Perd_kg_h'].sum().round(2)*0.27,2),Capa['Ajuste'].mean().round(2)]
         rinde_g = pd.DataFrame({'Variable':var,'Valor':values})
 
+        # Cambiar Nombre Variables
+        #==============================================================================================
+        new_name={'Elev':'Elevación','Vel':'Velocidad','Singu':'Singulación','Seed_Cnt':'Ct Semillas'}
+        for index, row in Capa.iterrows():
+            if row['Variable'] in new_name.keys():
+                Capa.at[index,'Variable'] = new_name[row['Variable']]
+
+        for index, row in Rangos.iterrows():
+            if row['Variable'] in new_name.keys():
+                Rangos.at[index,'Variable'] = new_name[row['Variable']]
+
+        
+
+        Rangos.rename(columns={'R_Ini':'Valor mínimo','R_Fin':'Valor máximo','Ajuste':'Confiabilidad %'},inplace=True)
+
         # Perdidas Globales -- Capa Siembra
         #============================================================================================================
-        fig=make_subplots(rows=2, cols=2,specs=[[{'type':"table"},{"type": "pie"}],[{"type": "table"},{'type':"table"}]],subplot_titles=("Perdidas por Variable", "", "Resumen", "Rango Sugerido"))
+        fig=make_subplots(rows=2, cols=2,specs=[[{'type':"table"},{"type": "pie"}],[{"type": "table"},{'type':"table"}]],subplot_titles=("Disminución de rinde por Variable", "", "Resumen", "Rango Sugerido"))
+        fig.add_trace(go.Pie(labels=Capa.loc[:,'Variable'],values=list(Capa['Porc_Perd'].values),textinfo='label+percent',pull=[0.1, 0.1, .3, 0,0],insidetextorientation='radial'),row=1, col=2)
+        Capa.rename(columns={'Ajuste':'Confiabilidad %','Porc_Perd':'Dism. de rinde %','Perd_kg_h':'Dism. de rinde en Kg/ha'},inplace=True,errors='ignore')
         fig.add_trace(go.Table(header=dict(values=Capa.columns.to_list(),font=dict(color='Green', size=14)),cells=dict(values=[list(Capa[x].values) if i==0 else  list(Capa[x].values.round(2)) for i,x in enumerate(Capa.columns.to_list())])),row=1, col=1)
         fig.add_trace(go.Table(header=dict(values=rinde_g.columns.to_list(),font=dict(color='Green', size=14),line = dict(color='rgb(50, 50, 50)'),
             fill = dict(color='#d562be')),cells=dict(values=[list(rinde_g[x].values) for x in rinde_g.columns.to_list()],
             line_color='darkslategray',fill=dict(color=['paleturquoise', 'white']),align=['left', 'center'])),row=2, col=1)
-        fig.add_trace(go.Pie(labels=Capa.loc[:,'Variable'],values=list(Capa['Porc_Perd'].values),textinfo='label+percent',pull=[0.1, 0.1, .3, 0,0],insidetextorientation='radial'),row=1, col=2)
+        
         fig.add_trace(go.Table(header=dict(values=Rangos.columns.to_list(),font=dict(color='Green', size=14)),cells=dict(values=[list(Rangos[x].values) for x in Rangos.columns.to_list()])),row=2, col=2)
 
         fig.update_annotations(font_size=fontsize)
-        fig.update_layout(height=600, width=900, title_text='Capa: '+capa,showlegend=False,title_font_size=fontsize+2,
+        fig.update_layout(height=600, width=900, title_text='Labor seleccionada: '+capa,showlegend=False,title_font_size=fontsize+2,
             title_font_color='Green',title_font_family='Titillium Web')
         st.write(fig)
         #st.write(rinde_g)
