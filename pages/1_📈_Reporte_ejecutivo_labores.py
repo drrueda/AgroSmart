@@ -45,7 +45,7 @@ for n in cosechas:
     opciones.append(cad)
 
 cosecha = st.selectbox(
-     "Cuál cosecha desea revisar?",
+     "Qué lote quiere revisar?",
      opciones
 )
 
@@ -54,7 +54,7 @@ file = Path+cosechas[opciones.index(cosecha)]+'/'
 rinde = file+'rinde.csv'
 resumen = file+'resumen.csv'
 
-st.sidebar.success(f"Procesando: {cosecha}")
+st.sidebar.success(f"Labor seleccionada: {cosecha}")
 # Leer dataframe
 
 if (path.exists(rinde))&(path.exists(resumen)):
@@ -71,7 +71,7 @@ if (path.exists(rinde))&(path.exists(resumen)):
     cps = capas.copy()
     # Opciones por capa:
     capas.append('Resumen')
-    capa = st.selectbox("Cuál capa desea revisar?",capas)
+    capa = st.selectbox("Seleccione labor",capas)
     if capa == 'Resumen':
         Labels = list(Perd_capa.loc[:,'Capa'].values)
         labels = []
